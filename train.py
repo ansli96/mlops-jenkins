@@ -1,3 +1,4 @@
 print("#####################################")
-print("This is the train Script from the push trigger")
+print("This is the train Script from the second push trigger")
+print("I DID IT, ALHAMDOULILLAH")
 print("#####################################")
