@@ -27,4 +27,5 @@ async def love_message(name1: str, name2: str, request: Request):
 
 if __name__ == "__main__":
     import uvicorn
+    print("HELLO FROM MAIN")
     uvicorn.run(app, host="0.0.0.0", port=5588)
