@@ -1,42 +1,23 @@
-from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Request, Form
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
 
 app = FastAPI()
-
-html_content = """
-<!DOCTYPE html>
-<html>
-<head>
-    <title>FastAPI Demo</title>
-</head>
-<body>
-    <h1>FastAPI Demo</h1>
-    <form id="form">
-        <label for="name">Enter your name:</label><br>
-        <input type="text" id="name" name="name"><br><br>
-        <button type="submit">Submit</button>
-    </form>
-    <p id="response"></p>
-    <script>
-        document.getElementById('form').addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const formData = new FormData(event.target);
-            const response = await fetch('/greet', {
-                method: 'POST',
-                body: formData
-            });
-            const data = await response.json();
-            document.getElementById('response').innerText = data.message;
-        });
-    </script>
-</body>
-</html>
-"""
+templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
-async def get_index():
-    return HTMLResponse(content=html_content)
+async def home(request: Request):
+    return templates.TemplateResponse("form.html", {"request": request})
 
-@app.post("/greet")
-async def greet(name: str):
-    return {"message": f"Hello, {name}! Welcome to FastAPI."}
+@app.post("/submit", response_class=HTMLResponse)
+async def submit(request: Request, name: str = Form(...), email: str = Form(...)):
+    # Redirect to another page with the submitted information
+    return RedirectResponse(url=f"/welcome?name={name}&email={email}")
+
+@app.get("/welcome", response_class=HTMLResponse)
+async def welcome(request: Request, name: str, email: str):
+    return templates.TemplateResponse("welcome.html", {"request": request, "name": name, "email": email})
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=5050)
