@@ -22,7 +22,7 @@ async def submit_info(name1: str = Form(...), name2: str = Form(...)):
 
 @app.get("/love/{name1}/{name2}", response_class=HTMLResponse)
 async def love_message(name1: str, name2: str, request: Request):
-    message = f"This is {name1}'s first deploy, and he is using it to let {name2} know that he adores her."
+    message = f"This is {name1}'s first CI CD deploy, and he is using it to let {name2} know that he adores her and wants to marry her."
     return templates.TemplateResponse("love.html", {"request": request, "message": message})
 
 if __name__ == "__main__":
